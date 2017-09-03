@@ -48,12 +48,31 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
 	#让最近绘制的屏幕可见
 	pygame.display.flip()
 
-def update_bullets(bullets):
+def update_bullets(ai_settings, screen, ship, aliens, bullets):
 	#删除出屏幕子弹
 	bullets.update()
 	for bullet in bullets.copy():
 		if bullet.rect.bottom <= 0:
 			bullets.remove(bullet)
+
+	check_bullet_alien_colisions(ai_settings, screen, ship, aliens, bullets)
+	"""
+	#检查碰撞并进行删除
+	collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+	if len(aliens) == 0:
+		#删除子弹创建新外星人
+		bullets.empty()
+		creat_fleet(ai_settings, screen, ship, aliens)
+	"""
+
+def check_bullet_alien_colisions(ai_settings, screen, ship, aliens, bullets):
+	collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+	if len(aliens) == 0:
+		#删除子弹创建新外星人
+		bullets.empty()
+		creat_fleet(ai_settings, screen, ship, aliens)
+
 
 def fire_bullet(ai_settings, screen, ship, bullets):
 	new_bullet = Bullet(ai_settings, screen, ship)
@@ -87,7 +106,21 @@ def creat_fleet(ai_settings, screen, ship, aliens):
 		for alien_number in range(number_alien_x):
 			creat_alien(ai_settings, screen, aliens, alien_number, row_number)
 
-def update_aliens(aliens):
+def check_fleet_edges(ai_settings, aliens):
+	'''外星人到达边缘'''
+	for alien in aliens.sprites():
+		if alien.check_edges():
+			change_fleet_direction(ai_settings, aliens)
+			break
+
+def change_fleet_direction(ai_settings, aliens):
+	"""下移并改变方向"""
+	for alien in aliens.sprites():
+		alien.rect.y += ai_settings.fleet_drop_speed
+	ai_settings.fleet_direction *= -1
+
+def update_aliens(ai_settings, aliens):
+	check_fleet_edges(ai_settings, aliens)
 	aliens.update()
 
 	'''

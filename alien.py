@@ -33,6 +33,6 @@ class Alien(Sprite):
 			return True
 
 	def update(self):
-		'''向右移动'''
+		'''向左或右移动'''
 		self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
 		self.rect.x = self.x
