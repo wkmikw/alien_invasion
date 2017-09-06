@@ -21,3 +21,6 @@ class Settings(object):
 		self.fleet_drop_speed = 10
 		# fleet_direction为1表示向右，-1表示向左
 		self.fleet_direction = 1
+
+		#飞船数量
+		self.ship_limit = 3
